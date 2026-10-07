@@ -1,0 +1,14 @@
+[project]
+name = "fox-agent-core"
+version = "0.1.0"
+description = "Minimal tool-using agent harness"
+requires-python = ">=3.12"
+dependencies = ["fox-ai"]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["fox_agent_core.src", "fox_agent_core.src.tools"]
+package-dir = {"fox_agent_core.src" = "src", "fox_agent_core.src.tools" = "src/tools"}
