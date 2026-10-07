@@ -16,6 +16,7 @@ from fox_coding_agent.src import CodingAgent, Config
 class RunRequest(BaseModel):
     prompt: str = Field(min_length=1)
     trial_skill: str | None = None
+    learn: bool | None = None
 
 
 class ConfigureRequest(BaseModel):
@@ -33,6 +34,19 @@ class MemoryRequest(BaseModel):
     content: str = Field(min_length=1)
     memory_type: str = "semantic"
     verify: bool = True
+    key: str = ""
+    ttl_days: float | None = Field(default=None, gt=0)
+
+
+class InvalidateRequest(BaseModel):
+    id: int
+    reason: str = Field(min_length=1)
+
+
+class RollbackRequest(BaseModel):
+    name: str
+    version: int = Field(ge=1)
+    reason: str = Field(min_length=1)
 
 
 class ValidationRequest(BaseModel):
@@ -79,10 +93,14 @@ def create_app(config=None, *, stream_fn=stream, static_dir=None):
         nonlocal coding
         require_idle()
         values = request.model_dump()
-        if values["api_key"] is None:
-            # Empty form keeps the current/environment key; it is never sent back.
-            values["api_key"] = coding.config.api_key if coding else Config.from_env(model=request.model).api_key
         try:
+            if values["api_key"] is None:
+                # Empty form keeps the current/environment/.env key; never sent back.
+                if coding:
+                    values["api_key"] = coding.config.api_key
+                else:
+                    env = Config.env_values(request.cwd)
+                    values["api_key"] = env.get("FOX_API_KEY", env.get("OPENAI_API_KEY", ""))
             replacement = CodingAgent(Config(**values), stream_fn=stream_fn)
         except (ValueError, OSError) as exc:
             raise HTTPException(400, str(exc)) from exc
@@ -102,7 +120,7 @@ def create_app(config=None, *, stream_fn=stream, static_dir=None):
 
         async def produce():
             try:
-                async for event in engine.run(request.prompt, trial_skill=request.trial_skill):
+                async for event in engine.run(request.prompt, trial_skill=request.trial_skill, learn=request.learn):
                     await queue.put({"type": event.type, "data": event.data})
             except asyncio.CancelledError:
                 await queue.put({"type": "run_end", "data": {"status": "cancelled"}})
@@ -151,10 +169,37 @@ def create_app(config=None, *, stream_fn=stream, static_dir=None):
         engine = require_agent()
         try:
             id = engine.memory.add(request.content, memory_type=request.memory_type,
-                                   scope=engine.scope, source="user", confidence=1, verify=request.verify)
+                                   scope=engine.scope, source="user", confidence=1, verify=request.verify,
+                                   key=request.key, ttl_days=request.ttl_days)
         except ValueError as exc:
             raise HTTPException(400, str(exc)) from exc
         return {"id": id}
+
+    @app.post("/api/memory/invalidate")
+    async def invalidate(request: InvalidateRequest):
+        engine = require_agent()
+        require_idle()
+        try:
+            return asdict(engine.memory.invalidate(request.id, request.reason))
+        except KeyError as exc:
+            raise HTTPException(404, "Unknown memory") from exc
+
+    @app.get("/api/skills/{name}/history")
+    async def skill_history(name: str):
+        engine = require_agent()
+        if not engine.skills.get(name):
+            raise HTTPException(404, "Unknown skill")
+        return engine.skills.history(name)
+
+    @app.post("/api/skills/rollback")
+    async def rollback(request: RollbackRequest):
+        engine = require_agent()
+        require_idle()
+        try:
+            skill = engine.skills.rollback(request.name, request.version, reason=request.reason)
+        except ValueError as exc:
+            raise HTTPException(400, str(exc)) from exc
+        return {**asdict(skill), "utility": skill.utility}
 
     @app.post("/api/skills/validate")
     async def validate(request: ValidationRequest):

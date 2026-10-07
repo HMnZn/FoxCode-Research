@@ -29,7 +29,7 @@ npm install
 npm run dev
 ```
 
-打开 `http://127.0.0.1:5273`，在右上角「配置模型」或左下角「运行配置」填写模型 ID、API 地址、项目目录和 API Key。
+打开终端输出的 `Local` 地址（默认 `http://127.0.0.1:5273`；端口被占用时自动尝试 5274 等后续端口），在右上角「配置模型」或左下角「运行配置」填写模型 ID、API 地址、项目目录和 API Key。
 OpenAI、DeepSeek、Qwen、GLM、vLLM 等使用同一个 Chat Completions adapter。
 Key 留在服务端内存，接口不回传；留空使用现有或环境密钥。
 
@@ -42,6 +42,9 @@ export FOX_API_KEY=your-key
 uv run python -m fox_serve --cwd /path/to/project
 ```
 PowerShell 环境变量写法为 `$env:FOX_MODEL="your-model-id"`，其余同理。
+
+也支持 `.env`：将仓库根目录的 [.env.example](.env.example) 复制为 `.env`，填写模型、API 地址和 Key，无需手动设置环境变量。CLI 和服务会先从项目目录（`--cwd` 或前端选定目录）向父目录查找最近的 `.env`；找不到时再从启动目录向上查找，只读取找到的第一个文件。优先级为：显式参数 > 已有环境变量 > `.env` > 默认值。`.env` 已被 Git 忽略；修改后重启服务生效。
+
 界面预览：
 
 ![FoxCode Research 工作台](docs/images/workspace.png)
@@ -58,13 +61,15 @@ uv run fox --json "Inspect the test command"
 
 ## 三个研究模块
 
-- **Context**：本次模型看到的信息。TaskState 记录目标、约束、计划、文件、修改、observations、失败、测试和工作状态。压缩按 utility 选择完整消息组，用户原文受保护。token 估算使用 UTF-8 bytes/3，预算为输出留空间。
-- **Memory**：跨任务事实和经验。Working Memory 在 TaskState 中；Episodic/Semantic 存在 SQLite/FTS5，按 BM25、recency、scope、confidence/success 排序。历史项目事实使用前需要工具验证。
-- **Skill**：多次证据支持的行为策略。失败→恢复、重复错误、显式用户纠正产生 Candidate。下次任务显式试用，再反馈有效/无效。至少两次独立验证升级 Active；五次成功且置信度足够升级 Mature；低 utility 或长期低收益则 Prune。
+- **Context**：分层信息预算、API usage 校准、迟滞压缩；按完整工具协议组选择原文、压缩观测或淘汰。TaskState 跟踪文件修订与失败/重试证据，用户原文受保护，长观测可通过存档引用重新读取。
+- **Memory**：项目事实与具体执行经验。SQLite/FTS5 支持证据去重、事实版本与冲突替代、TTL 和文件指纹；检索采用 BM25、多信号排序及 MMR 风格多样性选择。自动事实先累积不同来源证据，历史事实仍需核验。
+- **Skill**：带前置条件、步骤、验证和反例的可复用策略。参考 BearCode 的下一轮反馈窗口、Extractor/Maintainer 与来源审计；新修订作为 Candidate，原有稳定版本继续服务。显式试用和外部反馈绑定实际注入版本，支持归档和回滚。
 
-Memory/Skill 只检索 top-k 注入 Context，Candidate 不自动注入。JSONL trajectory 可用于后续 SWE-bench/RL 实验；当前没有实现 RL 训练或模型 internalization。
+Memory/Skill 先检索 top-k，再由 Context 预算决定实际注入，Candidate 不自动注入。JSONL trajectory 记录原始观测、版本与研究决策，可用于后续 SWE-bench/RL 实验；当前没有实现 RL 训练或模型 internalization，也没有运行效果评估。
 
-数据在 `<project>/.foxcode/research/`：`memory.sqlite`、`skills.sqlite`、`trajectories.jsonl`。
+各模块的算法、源码阅读路线、案例、面试追问与后续实验设计见 [三模块学习路线](docs/learning/README.md)、[Context](docs/learning/CONTEXT.md)、[Memory](docs/learning/MEMORY.md)、[Skill Evolution](docs/learning/SKILL_EVOLUTION.md)。
+
+数据在 `<project>/.foxcode/research/`：`memory.sqlite`、`skills.sqlite`、`trajectories.jsonl`、`observations/`。本轮研究字段升级保留已有数据库和轨迹。
 「新任务」清空 Context/Working Memory，保留长期数据。旧会话、Markdown Memory、旧 Skill 没有兼容包装或自动迁移，原目录数据保留。切模型会重新组装 CodingAgent 并清空当前 Context。
 
 Read/Write/Edit/Glob/Bash 直接在所选目录运行，没有隔离环境。POSIX shell 使用 `/bin/sh`，Windows 使用 `cmd.exe`；需要 PowerShell 时由命令显式调用。

@@ -9,9 +9,9 @@ npm install
 npm run dev
 ```
 
-`npm run dev` 会同时启动 Python 服务（8877）和 Vite（5273）。已运行服务时会直接复用；`npm run dev:web` 只启动 Vite。
+`npm run dev` 会同时启动 Python 服务（8877）和 Vite（默认 5273）。已运行的 Python 服务会直接复用；Vite 端口被占用时自动尝试 5274 等后续端口。`npm run dev:web` 只启动 Vite，也会自动选择可用端口。
 
-打开 `http://127.0.0.1:5273`。`npm run build` 后可从 Python 服务的 `http://127.0.0.1:8877` 访问。
+打开终端输出的 `Local` 地址（默认 `http://127.0.0.1:5273`）。`npm run build` 后可从 Python 服务的 `http://127.0.0.1:8877` 访问。
 `npm start` 启动薄 Electron 窗口，加载已有 HTTP 服务；`FOXCODE_UI_URL` 可改变地址。
 
 支持配置、Prompt、流式文本/Thinking、工具参数与结果、停止、新任务、Context/Memory/Skill 状态、候选 Skill 试用与有效/无效反馈。状态来自真实服务，没有离线 Mock 回退。

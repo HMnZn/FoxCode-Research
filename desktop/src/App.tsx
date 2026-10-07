@@ -141,7 +141,7 @@ export function App() {
   const tokenBudget = state.context?.budget ?? budget
   const memoryCount = Object.values(state.memory?.counts ?? {}).reduce((sum, n) => sum + n, 0)
   const skills = state.skills?.items ?? []
-  const activeSkills = skills.filter(skill => ['active', 'mature'].includes(skill.status)).length
+  const activeSkills = skills.filter(skill => skill.champion_version || ['active', 'mature'].includes(skill.status)).length
   const projectName = state.cwd?.split(/[\\/]/).filter(Boolean).at(-1) ?? '选择一个项目'
   const visibleItems = items.filter(item => item.kind !== 'assistant' || item.pending || item.text || item.reasoning)
   const examples = [
@@ -358,6 +358,13 @@ export function App() {
                   <span>已使用 {(tokens / tokenBudget * 100).toFixed(1)}%</span>
                   <span>压缩 {state.context?.compressions ?? 0} 次</span>
                 </div>
+                {state.context?.layers && <details>
+                  <summary>预算分层与压缩决策</summary>
+                  <pre>{Object.entries(state.context.layers).map(([name, cost]) => `${name}: ${cost}`).join('\n')}</pre>
+                  <small>估算校准 ×{state.context.calibration ?? 1} · 压缩 {state.context.compacted_groups ?? 0} 组 · 淘汰 {state.context.dropped_groups ?? 0} 组</small>
+                  <pre>{state.context.decisions?.map(d => `#${d.group} ${d.action} · U=${d.utility} · ${d.tokens} tokens · ${d.reason}`).join('\n')}</pre>
+                  {!!state.context.retrieval_dropped?.length && <small>预算不足，未注入：{state.context.retrieval_dropped.map(b => `${b.kind}:${b.id}`).join(', ')}</small>}
+                </details>}
               </section>
               <section className="research-card">
                 <div className="card-title">
@@ -415,6 +422,9 @@ export function App() {
                     <small>Semantic · 项目知识</small>
                   </div>
                 </div>
+                {state.memory?.statuses && <p className="panel-description">
+                  待累积证据 {state.memory.statuses.provisional ?? 0} · 已替代 {state.memory.statuses.superseded ?? 0} · 已失效 {state.memory.statuses.invalidated ?? 0}
+                </p>}
               </section>
               <div className="panel-section-label">本次召回<span>{state.memory?.retrieved.length ?? 0}</span>
               </div>{state.memory?.retrieved.length ? state.memory.retrieved.map((hit, i) => <details className="research-card" key={i}>
@@ -422,6 +432,8 @@ export function App() {
                 </summary>
                 <pre>{hit.memory.content}</pre>
                 <small>{hit.memory.verify ? 'Historical hint · 使用前验证' : '项目偏好 / 经验'}</small>
+                {!!hit.stale_paths?.length && <p className="panel-description">关联文件已变化：{hit.stale_paths.join(', ')}</p>}
+                {hit.breakdown && <pre>{Object.entries(hit.breakdown).map(([signal, value]) => `${signal}: ${value.toFixed(3)}`).join('\n')}{`\n多样性惩罚: ${(hit.diversity_penalty ?? 0).toFixed(3)}`}</pre>}
               </details>) : <div className="panel-empty research-card">
                 <span className="empty-mini">
                   <Icon name="book" />
@@ -471,15 +483,21 @@ export function App() {
                 <pre>{skill.instructions}</pre>
                 <div className="skill-evidence">
                   <span>v{skill.version}</span>
-                  <span>{skill.success_count} 成功 / {skill.failure_count} 失败</span>
+                  <span>{skill.success_count} 有效 / {skill.failure_count} 无效反馈</span>
                   <span>U = {skill.utility}</span>
                 </div>
+                <p className="panel-description">稳定版本：{skill.champion_version ? `v${skill.champion_version}` : '等待外部验证'} · 召回 {skill.retrieved_count ?? 0} / 注入 {skill.injected_count ?? 0}</p>
+                {skill.preconditions?.length ? <pre>{`前置条件：\n${skill.preconditions.join('\n')}\n验证：\n${skill.verification?.join('\n') ?? ''}`}</pre> : null}
                 <div className="skill-actions">
                   <button onClick={() => setTrial(skill.name)} disabled={busy || ['rejected', 'pruned'].includes(skill.status)}>下次任务试用</button>
                   <button onClick={() => feedback(skill.name, true)} disabled={busy || !state.skills?.selected.includes(skill.name)}>有效</button>
                   <button onClick={() => feedback(skill.name, false)} disabled={busy || !state.skills?.selected.includes(skill.name)}>无效</button>
                 </div>
               </details>)}
+              {!!state.skills?.evolution?.decisions.length && <details className="research-card">
+                <summary>本次演化决策</summary>
+                <pre>{state.skills.evolution.decisions.map(d => `${d.action} ${d.name}${d.version ? ` v${d.version}` : ''}\n${d.reason}`).join('\n\n')}</pre>
+              </details>}
               <div className="insight-note">
                 <Icon name="check" />
                 <p>证据驱动的演化<span>候选策略不会因一次成功就永久启用。</span>

@@ -3,7 +3,7 @@ name = "fox-coding-agent"
 version = "0.1.0"
 description = "Task-aware context, project memory and evolving skills"
 requires-python = ">=3.12"
-dependencies = ["fox-agent-core", "fox-ai"]
+dependencies = ["fox-agent-core", "fox-ai", "python-dotenv>=1,<2"]
 
 [build-system]
 requires = ["setuptools>=75"]

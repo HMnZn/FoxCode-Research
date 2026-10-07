@@ -61,7 +61,7 @@ def test_project_memory_persistence_ranking_and_verification(tmp_path):
     store = MemoryStore(path)
     hits = retrieve(store, "parser tests", "project-a")
     assert [h["memory"]["id"] for h in hits] == [id]
-    assert set(hits[0]["breakdown"]) == {"bm25", "recency", "scope", "confidence", "success"}
+    assert set(hits[0]["breakdown"]) == {"bm25", "recency", "scope", "confidence", "success", "coverage", "verified", "stale"}
     assert "verification required" in format_memories(hits)
     assert "Read/Glob/Bash" in format_memories(hits)
     assert retrieve(store, "增加依赖", "project-a")
@@ -135,7 +135,7 @@ async def test_complete_coding_task_records_experience(tmp_path):
     trajectory = json.loads((coding.config.data_dir / "trajectories.jsonl").read_text())
     assert len(trajectory["tools"]) == 4 and trajectory["status"] == "completed"
     # Explicit trial allows held-out candidate validation without auto-injection.
-    await collect(coding.run("Verify main.py", trial_skill=name))
+    await collect(coding.run("Verify main.py", trial_skill=name, learn=True))
     id = coding.trajectory["id"]
     assert name in coding.trajectory["used_skills"]
     episode = coding.memory.db.execute("SELECT content FROM memories ORDER BY id DESC LIMIT 1").fetchone()

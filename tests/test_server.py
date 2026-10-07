@@ -43,6 +43,28 @@ def test_configuration_state_reset_and_memory(tmp_path):
         assert client.post("/api/skills/validate", json={"name": "missing", "trajectory_id": "missing", "useful": True}).status_code == 400
 
 
+def test_configuration_uses_project_dotenv_key(monkeypatch, tmp_path):
+    monkeypatch.delenv("FOX_API_KEY", raising=False)
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    (tmp_path / ".env").write_text("FOX_API_KEY=project-secret\n", encoding="utf-8")
+    keys = []
+
+    async def capture(model, context, options):
+        keys.append(options.api_key)
+        async for event in answer():
+            yield event
+
+    app = create_app(stream_fn=capture, static_dir=tmp_path / "absent")
+    with TestClient(app) as client:
+        response = client.post("/api/config", json={"cwd": str(tmp_path), "model": "fake"})
+        assert response.status_code == 200
+        assert "project-secret" not in response.text
+        events = frames(client.post("/api/run", json={"prompt": "hello"}))
+        assert events[-1]["data"]["status"] == "completed"
+        assert keys == ["project-secret"]
+        assert "project-secret" not in client.get("/api/state").text
+
+
 @asynccontextmanager
 async def live_server(app):
     sock = socket.socket()
@@ -131,3 +153,33 @@ async def test_http_to_sdk_to_tool_to_sse(tmp_path):
         assert (tmp_path / "answer.py").read_text() == "print(42)"
         assert len(requests) == 2 and len(requests[0]["tools"]) == 5
         assert (await client.get("/api/state")).json()["memory"]["counts"] == {"episodic": 1}
+
+
+def test_memory_revisions_and_skill_history_rollback_api(tmp_path):
+    from fox_coding_agent.src.skills import Skill, SkillStore
+
+    config = Config(cwd=tmp_path, model='fake')
+    config.data_dir.mkdir(parents=True)
+    store = SkillStore(config.data_dir / 'skills.sqlite')
+    skill = Skill('edit', 'Edit recovery', 'Edit failure', 'Read before Edit', source_trajectory=['origin'])
+    store.propose(skill)
+    for source in ['t1', 't2']:
+        store.record('edit', success=True, evidence_id=source)
+    skill.instructions = 'Read before Edit and re-read after Edit'
+    skill.source_trajectory = ['revision-source']
+    store.propose(skill)
+    for source in ['t3', 't4']:
+        store.record('edit', success=True, evidence_id=source)
+    store.close()
+    with TestClient(create_app(config, stream_fn=answer, static_dir=tmp_path / 'absent')) as client:
+        first = client.post('/api/memory', json={'content': 'Run pytest', 'key': 'check'}).json()['id']
+        second = client.post('/api/memory', json={'content': 'Run unittest', 'key': 'check'}).json()['id']
+        assert first != second
+        assert client.get('/api/state').json()['memory']['statuses']['superseded'] == 1
+        assert client.post('/api/memory/invalidate', json={'id': second, 'reason': 'obsolete'}).json()['status'] == 'invalidated'
+        assert client.post('/api/memory/invalidate', json={'id': 9999, 'reason': 'missing'}).status_code == 404
+        history = client.get('/api/skills/edit/history').json()
+        assert len(history['versions']) == 2
+        assert client.post('/api/skills/rollback', json={'name': 'edit', 'version': 1, 'reason': 'external report'}).json()['champion_version'] == 1
+        assert client.get('/api/skills/edit/history').json()['events'][-1]['action'] == 'rollback'
+        assert client.get('/api/skills/missing/history').status_code == 404

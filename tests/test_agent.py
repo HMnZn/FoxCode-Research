@@ -1,9 +1,17 @@
 import asyncio
 import sys
 import shlex
+import os
+import subprocess
+from pathlib import Path
 import pytest
 from fox_ai.src import AssistantMessage, Context, Done, Model, TextDelta, ToolCall
 from fox_agent_core.src import Agent, Hooks, Read, Write, Edit, Glob, Bash, coding_tools
+
+
+def python_command(code):
+    args = [sys.executable, "-c", code]
+    return subprocess.list2cmdline(args) if os.name == "nt" else shlex.join(args)
 
 
 async def test_five_tools(tmp_path):
@@ -13,8 +21,8 @@ async def test_five_tools(tmp_path):
     assert "four" in (tmp_path / "src/a.py").read_text()
     with pytest.raises(ValueError):
         await Edit(tmp_path).execute({"file_path": "src/a.py", "old_text": "missing", "new_text": "x"})
-    assert "src/a.py" in await Glob(tmp_path).execute({"pattern": "**/*.py"})
-    command = f'{shlex.quote(sys.executable)} -c "import sys; print(42); print(43, file=sys.stderr)"'
+    assert str(Path("src/a.py")) in await Glob(tmp_path).execute({"pattern": "**/*.py"})
+    command = python_command("import sys; print(42); print(43, file=sys.stderr)")
     output = await Bash(tmp_path).execute({"command": command})
     assert "returncode: 0" in output and "42" in output and "43" in output
 
@@ -47,7 +55,7 @@ async def test_tool_loop_error_observation_and_hooks(tmp_path):
 async def test_cancel_closes_pending_tool_calls(tmp_path):
     started = asyncio.Event()
     async def model(*args):
-        yield Done(AssistantMessage(tool_calls=[ToolCall("a", "Bash", {"command": f'{shlex.quote(sys.executable)} -c "import time; time.sleep(30)"'})]))
+        yield Done(AssistantMessage(tool_calls=[ToolCall("a", "Bash", {"command": python_command("import time; time.sleep(30)")})]))
     agent = Agent(Model("fake"), coding_tools(tmp_path), stream_fn=model)
     async def consume():
         events = []
@@ -87,6 +95,6 @@ async def test_model_cancellation_and_turn_limit():
 
 async def test_bash_failure_and_timeout_are_observations(tmp_path):
     with pytest.raises(RuntimeError, match="returncode: 2"):
-        await Bash(tmp_path).execute({"command": f'{shlex.quote(sys.executable)} -c "import sys; sys.exit(2)"'})
+        await Bash(tmp_path).execute({"command": python_command("import sys; sys.exit(2)")})
     with pytest.raises(TimeoutError):
-        await Bash(tmp_path).execute({"command": f'{shlex.quote(sys.executable)} -c "import time; time.sleep(30)"', "timeout": 0.1})
+        await Bash(tmp_path).execute({"command": python_command("import time; time.sleep(30)"), "timeout": 0.1})

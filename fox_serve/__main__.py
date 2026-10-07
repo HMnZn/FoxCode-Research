@@ -1,5 +1,4 @@
 import argparse
-import os
 import uvicorn
 from fox_coding_agent.src import Config
 from .app import create_app
@@ -12,7 +11,7 @@ def main():
     parser.add_argument("--base-url")
     parser.add_argument("--port", type=int, default=8877)
     args = parser.parse_args()
-    model = args.model or os.getenv("FOX_MODEL")
+    model = args.model or Config.env_values(args.cwd).get("FOX_MODEL")
     config = Config.from_env(cwd=args.cwd, model=model, base_url=args.base_url) if model else None
     uvicorn.run(create_app(config), host="127.0.0.1", port=args.port)
 
