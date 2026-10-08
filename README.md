@@ -67,7 +67,7 @@ uv run fox --json "Inspect the test command"
 
 Memory/Skill 先检索 top-k，再由 Context 预算决定实际注入，Candidate 不自动注入。JSONL trajectory 记录原始观测、版本与研究决策，可用于后续 SWE-bench/RL 实验；当前没有实现 RL 训练或模型 internalization，也没有运行效果评估。
 
-各模块的算法、源码阅读路线、案例、面试追问与后续实验设计见 [三模块学习路线](docs/learning/README.md)、[Context](docs/learning/CONTEXT.md)、[Memory](docs/learning/MEMORY.md)、[Skill Evolution](docs/learning/SKILL_EVOLUTION.md)。
+详细的图文教程、源码阅读路线、离线练习和面试追问见 [全栈学习路线](docs/learning/README.md)：[fox_ai](docs/learning/FOX_AI.md)、[fox_agent_core](docs/learning/AGENT_CORE.md)、[fox_coding_agent](docs/learning/CODING_AGENT.md)、[Context](docs/learning/CONTEXT.md)、[Memory](docs/learning/MEMORY.md)、[Skill Evolution](docs/learning/SKILL_EVOLUTION.md)、[fox_serve](docs/learning/SERVE.md)、[desktop](docs/learning/DESKTOP.md)。
 
 数据在 `<project>/.foxcode/research/`：`memory.sqlite`、`skills.sqlite`、`trajectories.jsonl`、`observations/`。本轮研究字段升级保留已有数据库和轨迹。
 「新任务」清空 Context/Working Memory，保留长期数据。旧会话、Markdown Memory、旧 Skill 没有兼容包装或自动迁移，原目录数据保留。切模型会重新组装 CodingAgent 并清空当前 Context。

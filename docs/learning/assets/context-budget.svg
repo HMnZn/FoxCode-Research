@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="780" viewBox="0 0 1280 780" role="img" aria-labelledby="title desc">
+<title id="title">Context：在有限预算中准备下一次调用</title>
+<desc id="desc">保护用户原文和工具协议，逐步压缩观测；检索到的信息仍需经过预算选择。 图中比例是当前启发式参数；token 估算与 API 实际计数仍可能有误差。 估算可用预算：输入预算 B，输出另行预留，raw_budget = floor(B / a)，usage 更新保守校准系数 a；分配检索额度：Memory / Skill 共用额度，最多约 raw_budget 的 25%，显式 trial 优先且必须放得下；检查触发阈值：输入超过 90% 时压缩，优先尝试压到 75%，必要时放宽到硬预算；按完整协议组处理：调用与所有结果不可拆开，保留用户输入和最新执行组，文件修订 / 未解决失败参与评分；渐进式选择：raw → compact → drop，压缩保留诊断行与存档引用，余量允许时恢复近期原文；输出与审计：保留时间顺序的模型消息，记录 decisions / layers，保护内容超预算时明确报错</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#687b94" stroke-width="1.6"/></marker></defs>
+<rect width="1280" height="780" rx="24" fill="#f4f7fc"/>
+<rect x="40" y="35" width="6" height="40" rx="3" fill="#3864dc"/>
+<text x="62" y="65" font-size="30" font-weight="700" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Context：在有限预算中准备下一次调用</text>
+<text x="42" y="112" font-size="19" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">保护用户原文和工具协议，逐步压缩观测；检索到的信息仍需经过预算选择。</text>
+<rect x="40" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="41" y="157" width="368" height="6" rx="3" fill="#3864dc"/>
+<circle cx="75" cy="198" r="17" fill="#3864dc"/>
+<text x="69" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">1</text>
+<text x="104" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">估算可用预算</text>
+<text x="65" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">输入预算 B，输出另行预留</text>
+<text x="65" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">raw_budget = floor(B / a)</text>
+<text x="65" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">usage 更新保守校准系数 a</text>
+<rect x="455" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="456" y="157" width="368" height="6" rx="3" fill="#168374"/>
+<circle cx="490" cy="198" r="17" fill="#168374"/>
+<text x="484" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">2</text>
+<text x="519" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">分配检索额度</text>
+<text x="480" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Memory / Skill 共用额度</text>
+<text x="480" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">最多约 raw_budget 的 25%</text>
+<text x="480" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">显式 trial 优先且必须放得下</text>
+<rect x="870" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="871" y="157" width="368" height="6" rx="3" fill="#ad6b11"/>
+<circle cx="905" cy="198" r="17" fill="#ad6b11"/>
+<text x="899" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">3</text>
+<text x="934" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">检查触发阈值</text>
+<text x="895" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">输入超过 90% 时压缩</text>
+<text x="895" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">优先尝试压到 75%</text>
+<text x="895" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">必要时放宽到硬预算</text>
+<rect x="870" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="871" y="453" width="368" height="6" rx="3" fill="#7251bd"/>
+<circle cx="905" cy="494" r="17" fill="#7251bd"/>
+<text x="899" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">4</text>
+<text x="934" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">按完整协议组处理</text>
+<text x="895" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">调用与所有结果不可拆开</text>
+<text x="895" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">保留用户输入和最新执行组</text>
+<text x="895" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">文件修订 / 未解决失败参与评分</text>
+<rect x="455" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="456" y="453" width="368" height="6" rx="3" fill="#168374"/>
+<circle cx="490" cy="494" r="17" fill="#168374"/>
+<text x="484" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">5</text>
+<text x="519" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">渐进式选择</text>
+<text x="480" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">raw → compact → drop</text>
+<text x="480" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">压缩保留诊断行与存档引用</text>
+<text x="480" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">余量允许时恢复近期原文</text>
+<rect x="40" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="41" y="453" width="368" height="6" rx="3" fill="#3864dc"/>
+<circle cx="75" cy="494" r="17" fill="#3864dc"/>
+<text x="69" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">6</text>
+<text x="104" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">输出与审计</text>
+<text x="65" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">保留时间顺序的模型消息</text>
+<text x="65" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">记录 decisions / layers</text>
+<text x="65" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">保护内容超预算时明确报错</text>
+<path d="M414 266 H448" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M829 266 H863" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1055 383 V439" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M864 562 H831" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M448 562 H416" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="40" y="710" width="1200" height="43" rx="10" fill="#e8eef9"/>
+<text x="57" y="738" font-size="17" font-weight="400" fill="#3b5375" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">图中比例是当前启发式参数；token 估算与 API 实际计数仍可能有误差。</text>
+</svg>

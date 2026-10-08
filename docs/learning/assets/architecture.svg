@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="780" viewBox="0 0 1280 780" role="img" aria-labelledby="title desc">
+<title id="title">FoxCode 全栈学习地图</title>
+<desc id="desc">沿着一次用户任务，认识界面、服务、组装、执行、模型和研究策略。 路径是学习导航；研究策略通过 Hook 参与执行，事件按相反方向返回工作台。 Desktop 工作台：React 保存界面状态，fetch POST 发送 Prompt，SSE 更新文字与工具卡片；fox_serve 本地服务：HTTP 校验配置和忙碌状态，单 Agent / 单活跃任务，Queue 转成 SSE 帧；CodingAgent 组合层：任务开始检索 Memory / Skill，每轮调用前分配 Context，Hook 记录执行证据；fox_agent_core 执行层：模型 → 工具 → 模型，Read / Write / Edit / Glob / Bash，错误观测、取消与协议配对；fox_ai 模型边界：内部对象 → Chat Completions，增量文字 / reasoning / 参数，完整消息、usage 与结束校验；研究数据与策略：Context：本次信息预算，Memory：跨任务事实和经验，Skill：候选、反馈与稳定版本</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#687b94" stroke-width="1.6"/></marker></defs>
+<rect width="1280" height="780" rx="24" fill="#f4f7fc"/>
+<rect x="40" y="35" width="6" height="40" rx="3" fill="#3864dc"/>
+<text x="62" y="65" font-size="30" font-weight="700" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">FoxCode 全栈学习地图</text>
+<text x="42" y="112" font-size="19" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">沿着一次用户任务，认识界面、服务、组装、执行、模型和研究策略。</text>
+<rect x="40" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="41" y="157" width="368" height="6" rx="3" fill="#3864dc"/>
+<circle cx="75" cy="198" r="17" fill="#3864dc"/>
+<text x="69" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">1</text>
+<text x="104" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Desktop 工作台</text>
+<text x="65" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">React 保存界面状态</text>
+<text x="65" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">fetch POST 发送 Prompt</text>
+<text x="65" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">SSE 更新文字与工具卡片</text>
+<rect x="455" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="456" y="157" width="368" height="6" rx="3" fill="#168374"/>
+<circle cx="490" cy="198" r="17" fill="#168374"/>
+<text x="484" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">2</text>
+<text x="519" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">fox_serve 本地服务</text>
+<text x="480" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">HTTP 校验配置和忙碌状态</text>
+<text x="480" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">单 Agent / 单活跃任务</text>
+<text x="480" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Queue 转成 SSE 帧</text>
+<rect x="870" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="871" y="157" width="368" height="6" rx="3" fill="#ad6b11"/>
+<circle cx="905" cy="198" r="17" fill="#ad6b11"/>
+<text x="899" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">3</text>
+<text x="934" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">CodingAgent 组合层</text>
+<text x="895" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">任务开始检索 Memory / Skill</text>
+<text x="895" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">每轮调用前分配 Context</text>
+<text x="895" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Hook 记录执行证据</text>
+<rect x="870" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="871" y="453" width="368" height="6" rx="3" fill="#7251bd"/>
+<circle cx="905" cy="494" r="17" fill="#7251bd"/>
+<text x="899" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">4</text>
+<text x="934" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">fox_agent_core 执行层</text>
+<text x="895" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">模型 → 工具 → 模型</text>
+<text x="895" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Read / Write / Edit / Glob / Bash</text>
+<text x="895" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">错误观测、取消与协议配对</text>
+<rect x="455" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="456" y="453" width="368" height="6" rx="3" fill="#168374"/>
+<circle cx="490" cy="494" r="17" fill="#168374"/>
+<text x="484" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">5</text>
+<text x="519" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">fox_ai 模型边界</text>
+<text x="480" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">内部对象 → Chat Completions</text>
+<text x="480" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">增量文字 / reasoning / 参数</text>
+<text x="480" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">完整消息、usage 与结束校验</text>
+<rect x="40" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="41" y="453" width="368" height="6" rx="3" fill="#3864dc"/>
+<circle cx="75" cy="494" r="17" fill="#3864dc"/>
+<text x="69" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">6</text>
+<text x="104" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">研究数据与策略</text>
+<text x="65" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Context：本次信息预算</text>
+<text x="65" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Memory：跨任务事实和经验</text>
+<text x="65" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Skill：候选、反馈与稳定版本</text>
+<path d="M414 266 H448" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M829 266 H863" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1055 383 V439" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M864 562 H831" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M448 562 H416" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="40" y="710" width="1200" height="43" rx="10" fill="#e8eef9"/>
+<text x="57" y="738" font-size="17" font-weight="400" fill="#3b5375" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">路径是学习导航；研究策略通过 Hook 参与执行，事件按相反方向返回工作台。</text>
+</svg>

@@ -1,5 +1,13 @@
 # Skill Evolution：从证据到可回滚策略版本
 
+[返回学习索引](README.md) · 前置：[CodingAgent](CODING_AGENT.md) · 关联：[Serve](SERVE.md)、[Desktop](DESKTOP.md)
+
+学习目标：能解释提取、维护、候选、试用、反馈和稳定版本的完整链路，并从轨迹确定反馈究竟更新了哪一版。
+
+![Skill 候选与稳定版本的演化链路](assets/skill-versions.svg)
+
+图中 v2 是最新修订，v1 是已有稳定版。普通检索与显式试用可以选择不同版本，实际注入记录是反馈归属的依据。
+
 ## 1. 先定义“自进化”的边界
 
 这里改变的是模型外部的可复用策略库：触发条件、前置条件、操作步骤、验证方式和反例。没有训练模型参数，也没有把试用结果直接当奖励做 RL。
@@ -10,7 +18,7 @@
 
 ## 2. 从 BearCode 参考了什么
 
-已阅读本机 `C:\Users\Qin\Desktop\秋招\BearCode` 中的：
+原有设计记录列出的 BearCode 参考入口如下。该外部项目未包含在本仓库中，本篇的实现说明以 FoxCode 源码为准：
 
 - `agents/online_skill_evolution.py`：候选抽取、add/merge/discard、在线来源记录。
 - `agents/skill_evolution.py`：创建/修改、版本历史、usage 和 provenance。
@@ -280,3 +288,96 @@ source_trajectory, cited_call_ids, cause_hypothesis
 比较：无 Skill、只有人工 Skill、规则候选、增加下一轮反馈、增加版本门槛、未来 LLM 候选。对固定任务分别运行 with/without Skill，分析正确性、工具次数、成本、负迁移，而不是把一次 completed 当作有效。
 
 `useful/saved_calls` 只是外部反馈入口。本轮没有运行这些评估、没有生成收益数字，也没有实现 BearCode 的在线效果评测系统。
+
+## 16. 手算反馈门槛与负反馈
+
+假设一个全新的 Candidate，每次反馈来自不同、非提取来源的实际注入轨迹，saved_calls=0。以下数值是按代码公式推演：
+
+| 正 / 负反馈 | posterior mean | utility | 结果 |
+| --- | --- | --- | --- |
+| 0 / 0 | 按公式为 .5；新候选存储 confidence 初始为 0 | 0 | candidate |
+| 1 / 0 | 2/3≈.667 | 1 | candidate，正反馈数还不足 |
+| 2 / 0 | 3/4=.75 | 2 | active，可建立稳定指针 |
+| 5 / 0 | 6/7≈.857 | 5 | mature |
+| 新候选 0 / 2 | 1/4=.25 | −4 | rejected |
+| 已 active，后来累计 2 / 2 | 3/6=.5 | −2 | pruned |
+
+重复 trajectory 不会让反馈数继续增加。saved_calls 只有正反馈时累积，单次限制在 0..5；它不由服务自动测量。
+
+新候选的 confidence 初始值与第一次反馈后使用的 posterior mean 要分开理解，不能把数学先验计算结果误当成当前存储字段。
+
+## 17. v1 稳定、v2 候选时究竟发生什么
+
+```mermaid
+sequenceDiagram
+    participant E as 新经验
+    participant S as SkillStore
+    participant R as 普通任务
+    participant T as 显式 trial
+    participant F as 外部反馈
+    E->>S: propose 新步骤
+    S->>S: 保存 candidate v2，champion 仍为 v1
+    R->>S: retrieve
+    S-->>R: serving v1
+    T->>S: get(name)
+    S-->>T: 最新 v2
+    T->>T: Context 注入并记录 name:v2
+    F->>S: 验证 trial 的 trajectory
+    S->>S: 仅更新 v2 的反馈
+    R->>S: v1 旧任务的迟到反馈
+    S->>S: 仅更新 v1，不能覆盖新稳定 v2
+```
+
+最后一步以 v2 已晋升为前提。源码 record 不会因旧版迟来的正反馈把较新的已批准版本替换回旧版；显式 rollback 则是有理由、有历史的操作。
+
+前端卡片展示最新修订，不等于上次普通任务用的版本。正确路径：`trajectory.used_skill_versions` → `skill_versions` → `skill_events`。页面的“有效”按钮使用轨迹 ID，后端定位版本。
+
+## 18. 可离线运行的版本隔离例子
+
+这段只演示 SkillStore 的数据与门槛，不运行任务。直接调用 record 会绕过 CodingAgent 对真实注入轨迹的检查，所以不能作为真实有效性证据：
+
+```bash
+uv run python - <<'PY'
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from fox_coding_agent.src.skills import Skill, SkillStore
+
+with TemporaryDirectory() as directory:
+    store = SkillStore(Path(directory) / "skills.sqlite")
+    try:
+        v1 = Skill("edit-demo", "局部编辑", "Edit match failure", "Read before Edit",
+                   source_trajectory=["origin-1"])
+        store.propose(v1)
+        store.record("edit-demo", success=True, evidence_id="heldout-1")
+        store.record("edit-demo", success=True, evidence_id="heldout-2")
+        assert store.serving("edit-demo").version == 1
+        v2 = Skill("edit-demo", "局部编辑", "Edit match failure", "Read, Edit, re-read",
+                   source_trajectory=["origin-2"])
+        store.propose(v2)
+        assert store.get("edit-demo").version == 2
+        assert store.get("edit-demo").status == "candidate"
+        assert store.serving("edit-demo").version == 1
+        print("最新修订:", store.get("edit-demo").version,
+              "普通服务:", store.serving("edit-demo").version)
+    finally:
+        store.close()
+PY
+```
+
+预期最新修订 2、普通服务 1。再对 v2 添加两个新的模拟正反馈，观察稳定指针更新；用重复 evidence_id 再反馈，观察计数不变。
+
+## 19. 候选与反馈排错表
+
+| 现象 | 检查顺序 |
+| --- | --- |
+| 失败恢复却没候选 | learn → trajectory.completed → 同工具/资源家族 → 间隔 ≤8 → 参数改变 |
+| 相邻成功被误认为恢复 | 资源/命令家族是否一致；这仍只是 candidate_hypothesis |
+| 下轮纠正没有关联旧任务 | 明确纠正标记、同 scope、pending 是否已消费、learn 是否允许 |
+| 候选没自动使用 | candidate 不参与普通 serving 检索，需显式 trial |
+| 明明试用了但验证失败 | Context 是否实际注入、trajectory_id、版本、提取来源、完成状态 |
+| 修改指令后成功数归零 | 新修订必须独立验证，旧版反馈留在旧版本 |
+| 回滚失败 | 目标版本是否仍为 active/mature，不能直接复活归档版本 |
+
+源码还有 `skill_usage` 与 `evolution_pending`：前者将召回/注入按 name/version/trajectory/stage 去重，后者保存每个 scope 最近的延迟窗口。两者都不是外部 usefulness 标签。
+
+最后自查：能够画出 latest 和 champion 的双指针；能够说明新版本为什么不继承正反馈；能够将反馈关联到实际注入版本；能够区分规则提取、模型学习和外部效果验证。

@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="780" viewBox="0 0 1280 780" role="img" aria-labelledby="title desc">
+<title id="title">fox_ai：从请求到完整助手消息</title>
+<desc id="desc">先转换输入，再接收分片；只有完整校验后的工具参数才能交给执行层。 Done 是适配器的内部事件；浏览器的任务结束事件是 run_end。 内部调用对象：Model / Context / StreamOptions，用户与工具结果保持原顺序，工具 schema 独立于消息；请求转换：convert_context 生成 messages，工具参数序列化为 JSON 字符串，stream=true / include_usage；模型端点：AsyncOpenAI Chat Completions，返回 content / reasoning 分片，工具片段按 index 分开累积；增量事件：TextDelta / ThinkingDelta，ToolCallDelta 只传参数片段，usage 可在空 choices 分片到达；完成校验：必须收到 finish_reason，解析并检查工具 JSON 对象，按 index 排序完整调用列表；输出与清理：Done 包含 AssistantMessage，错误转 Error，主循环处理，finally 关闭 response / 自建 client</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#687b94" stroke-width="1.6"/></marker></defs>
+<rect width="1280" height="780" rx="24" fill="#f4f7fc"/>
+<rect x="40" y="35" width="6" height="40" rx="3" fill="#3864dc"/>
+<text x="62" y="65" font-size="30" font-weight="700" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">fox_ai：从请求到完整助手消息</text>
+<text x="42" y="112" font-size="19" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">先转换输入，再接收分片；只有完整校验后的工具参数才能交给执行层。</text>
+<rect x="40" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="41" y="157" width="368" height="6" rx="3" fill="#3864dc"/>
+<circle cx="75" cy="198" r="17" fill="#3864dc"/>
+<text x="69" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">1</text>
+<text x="104" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">内部调用对象</text>
+<text x="65" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Model / Context / StreamOptions</text>
+<text x="65" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">用户与工具结果保持原顺序</text>
+<text x="65" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">工具 schema 独立于消息</text>
+<rect x="455" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="456" y="157" width="368" height="6" rx="3" fill="#168374"/>
+<circle cx="490" cy="198" r="17" fill="#168374"/>
+<text x="484" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">2</text>
+<text x="519" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">请求转换</text>
+<text x="480" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">convert_context 生成 messages</text>
+<text x="480" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">工具参数序列化为 JSON 字符串</text>
+<text x="480" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">stream=true / include_usage</text>
+<rect x="870" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="871" y="157" width="368" height="6" rx="3" fill="#ad6b11"/>
+<circle cx="905" cy="198" r="17" fill="#ad6b11"/>
+<text x="899" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">3</text>
+<text x="934" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">模型端点</text>
+<text x="895" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">AsyncOpenAI Chat Completions</text>
+<text x="895" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">返回 content / reasoning 分片</text>
+<text x="895" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">工具片段按 index 分开累积</text>
+<rect x="870" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="871" y="453" width="368" height="6" rx="3" fill="#7251bd"/>
+<circle cx="905" cy="494" r="17" fill="#7251bd"/>
+<text x="899" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">4</text>
+<text x="934" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">增量事件</text>
+<text x="895" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">TextDelta / ThinkingDelta</text>
+<text x="895" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">ToolCallDelta 只传参数片段</text>
+<text x="895" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">usage 可在空 choices 分片到达</text>
+<rect x="455" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="456" y="453" width="368" height="6" rx="3" fill="#168374"/>
+<circle cx="490" cy="494" r="17" fill="#168374"/>
+<text x="484" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">5</text>
+<text x="519" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">完成校验</text>
+<text x="480" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">必须收到 finish_reason</text>
+<text x="480" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">解析并检查工具 JSON 对象</text>
+<text x="480" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">按 index 排序完整调用列表</text>
+<rect x="40" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="41" y="453" width="368" height="6" rx="3" fill="#3864dc"/>
+<circle cx="75" cy="494" r="17" fill="#3864dc"/>
+<text x="69" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">6</text>
+<text x="104" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">输出与清理</text>
+<text x="65" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Done 包含 AssistantMessage</text>
+<text x="65" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">错误转 Error，主循环处理</text>
+<text x="65" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">finally 关闭 response / 自建 client</text>
+<path d="M414 266 H448" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M829 266 H863" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1055 383 V439" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M864 562 H831" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M448 562 H416" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="40" y="710" width="1200" height="43" rx="10" fill="#e8eef9"/>
+<text x="57" y="738" font-size="17" font-weight="400" fill="#3b5375" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Done 是适配器的内部事件；浏览器的任务结束事件是 run_end。</text>
+</svg>

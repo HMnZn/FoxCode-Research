@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="780" viewBox="0 0 1280 780" role="img" aria-labelledby="title desc">
+<title id="title">Skill：从新经验到独立版本反馈</title>
+<desc id="desc">最新修订与正在服务的版本分离；候选不会因为自身来源任务成功就自动晋升。 champion 表示当前稳定服务指针；它不是已完成 A/B 优胜比较的结论。 原始经验：失败后恢复 / 重复错误，下一轮明确用户纠正，保留 trajectory 与 call ID；Extractor / Maintainer：结构化步骤、验证与反例，family / scope / 环境约束，add / merge / discard 决策；Candidate v2：新修订独立保存，不继承 v1 成功反馈，稳定 v1 仍服务普通请求；显式试用：trial 注入最新可试用修订，默认 learn=false，记录 used_skill_versions；外部反馈：检查实际注入版本和来源，同轨迹反馈去重，有用 / 无用与节省调用输入；晋升与回滚：门槛满足后切稳定指针，负反馈可 rejected / pruned，历史保留，可回滚已验证版本</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#687b94" stroke-width="1.6"/></marker></defs>
+<rect width="1280" height="780" rx="24" fill="#f4f7fc"/>
+<rect x="40" y="35" width="6" height="40" rx="3" fill="#3864dc"/>
+<text x="62" y="65" font-size="30" font-weight="700" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Skill：从新经验到独立版本反馈</text>
+<text x="42" y="112" font-size="19" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">最新修订与正在服务的版本分离；候选不会因为自身来源任务成功就自动晋升。</text>
+<rect x="40" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="41" y="157" width="368" height="6" rx="3" fill="#3864dc"/>
+<circle cx="75" cy="198" r="17" fill="#3864dc"/>
+<text x="69" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">1</text>
+<text x="104" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">原始经验</text>
+<text x="65" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">失败后恢复 / 重复错误</text>
+<text x="65" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">下一轮明确用户纠正</text>
+<text x="65" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">保留 trajectory 与 call ID</text>
+<rect x="455" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="456" y="157" width="368" height="6" rx="3" fill="#168374"/>
+<circle cx="490" cy="198" r="17" fill="#168374"/>
+<text x="484" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">2</text>
+<text x="519" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Extractor / Maintainer</text>
+<text x="480" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">结构化步骤、验证与反例</text>
+<text x="480" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">family / scope / 环境约束</text>
+<text x="480" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">add / merge / discard 决策</text>
+<rect x="870" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="871" y="157" width="368" height="6" rx="3" fill="#ad6b11"/>
+<circle cx="905" cy="198" r="17" fill="#ad6b11"/>
+<text x="899" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">3</text>
+<text x="934" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Candidate v2</text>
+<text x="895" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">新修订独立保存</text>
+<text x="895" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">不继承 v1 成功反馈</text>
+<text x="895" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">稳定 v1 仍服务普通请求</text>
+<rect x="870" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="871" y="453" width="368" height="6" rx="3" fill="#7251bd"/>
+<circle cx="905" cy="494" r="17" fill="#7251bd"/>
+<text x="899" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">4</text>
+<text x="934" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">显式试用</text>
+<text x="895" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">trial 注入最新可试用修订</text>
+<text x="895" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">默认 learn=false</text>
+<text x="895" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">记录 used_skill_versions</text>
+<rect x="455" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="456" y="453" width="368" height="6" rx="3" fill="#168374"/>
+<circle cx="490" cy="494" r="17" fill="#168374"/>
+<text x="484" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">5</text>
+<text x="519" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">外部反馈</text>
+<text x="480" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">检查实际注入版本和来源</text>
+<text x="480" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">同轨迹反馈去重</text>
+<text x="480" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">有用 / 无用与节省调用输入</text>
+<rect x="40" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="41" y="453" width="368" height="6" rx="3" fill="#3864dc"/>
+<circle cx="75" cy="494" r="17" fill="#3864dc"/>
+<text x="69" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">6</text>
+<text x="104" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">晋升与回滚</text>
+<text x="65" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">门槛满足后切稳定指针</text>
+<text x="65" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">负反馈可 rejected / pruned</text>
+<text x="65" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">历史保留，可回滚已验证版本</text>
+<path d="M414 266 H448" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M829 266 H863" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1055 383 V439" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M864 562 H831" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M448 562 H416" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="40" y="710" width="1200" height="43" rx="10" fill="#e8eef9"/>
+<text x="57" y="738" font-size="17" font-weight="400" fill="#3b5375" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">champion 表示当前稳定服务指针；它不是已完成 A/B 优胜比较的结论。</text>
+</svg>

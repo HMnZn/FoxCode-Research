@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="780" viewBox="0 0 1280 780" role="img" aria-labelledby="title desc">
+<title id="title">CodingAgent：执行与研究策略组装</title>
+<desc id="desc">构造时连接组件；执行时记录证据；任务退出时保存学习结果与原始轨迹。 learn=false 保留 Context、轨迹和 usage 记录，关闭本次知识沉淀。 Config 与存储：规范化 cwd 作为项目 scope，创建 ContextManager，打开 Memory / Skill SQLite；run 开始：创建 trajectory 与环境记录，learn=true 消费延迟纠正，检索 Memory / 稳定 Skill；建立检索块：trial 选最新可试用修订，设置 required 与分数，Context 接收 system 和 blocks；Hook 参与执行：before_model：预算与实际注入，after_model：usage / 状态，工具 Hook：调用、结果、修订；工具证据与存档：较长工具结果写 observations，工具列表保留完整返回，中断步骤补 Execution interrupted；finally 持久化：允许学习时更新 Memory / Skill，追加 trajectories.jsonl，清 running，输出结束状态</desc>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#687b94" stroke-width="1.6"/></marker></defs>
+<rect width="1280" height="780" rx="24" fill="#f4f7fc"/>
+<rect x="40" y="35" width="6" height="40" rx="3" fill="#3864dc"/>
+<text x="62" y="65" font-size="30" font-weight="700" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">CodingAgent：执行与研究策略组装</text>
+<text x="42" y="112" font-size="19" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">构造时连接组件；执行时记录证据；任务退出时保存学习结果与原始轨迹。</text>
+<rect x="40" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="41" y="157" width="368" height="6" rx="3" fill="#3864dc"/>
+<circle cx="75" cy="198" r="17" fill="#3864dc"/>
+<text x="69" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">1</text>
+<text x="104" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Config 与存储</text>
+<text x="65" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">规范化 cwd 作为项目 scope</text>
+<text x="65" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">创建 ContextManager</text>
+<text x="65" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">打开 Memory / Skill SQLite</text>
+<rect x="455" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="456" y="157" width="368" height="6" rx="3" fill="#168374"/>
+<circle cx="490" cy="198" r="17" fill="#168374"/>
+<text x="484" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">2</text>
+<text x="519" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">run 开始</text>
+<text x="480" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">创建 trajectory 与环境记录</text>
+<text x="480" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">learn=true 消费延迟纠正</text>
+<text x="480" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">检索 Memory / 稳定 Skill</text>
+<rect x="870" y="156" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="871" y="157" width="368" height="6" rx="3" fill="#ad6b11"/>
+<circle cx="905" cy="198" r="17" fill="#ad6b11"/>
+<text x="899" y="205" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">3</text>
+<text x="934" y="206" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">建立检索块</text>
+<text x="895" y="255" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">trial 选最新可试用修订</text>
+<text x="895" y="292" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">设置 required 与分数</text>
+<text x="895" y="329" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Context 接收 system 和 blocks</text>
+<rect x="870" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="871" y="453" width="368" height="6" rx="3" fill="#7251bd"/>
+<circle cx="905" cy="494" r="17" fill="#7251bd"/>
+<text x="899" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">4</text>
+<text x="934" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">Hook 参与执行</text>
+<text x="895" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">before_model：预算与实际注入</text>
+<text x="895" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">after_model：usage / 状态</text>
+<text x="895" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">工具 Hook：调用、结果、修订</text>
+<rect x="455" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="456" y="453" width="368" height="6" rx="3" fill="#168374"/>
+<circle cx="490" cy="494" r="17" fill="#168374"/>
+<text x="484" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">5</text>
+<text x="519" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">工具证据与存档</text>
+<text x="480" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">较长工具结果写 observations</text>
+<text x="480" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">工具列表保留完整返回</text>
+<text x="480" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">中断步骤补 Execution interrupted</text>
+<rect x="40" y="452" width="370" height="220" rx="18" fill="white" stroke="#d9e2ef"/>
+<rect x="41" y="453" width="368" height="6" rx="3" fill="#3864dc"/>
+<circle cx="75" cy="494" r="17" fill="#3864dc"/>
+<text x="69" y="501" font-size="19" font-weight="700" fill="white" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">6</text>
+<text x="104" y="502" font-size="23" font-weight="650" fill="#142942" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">finally 持久化</text>
+<text x="65" y="551" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">允许学习时更新 Memory / Skill</text>
+<text x="65" y="588" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">追加 trajectories.jsonl</text>
+<text x="65" y="625" font-size="18" font-weight="400" fill="#41536d" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">清 running，输出结束状态</text>
+<path d="M414 266 H448" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M829 266 H863" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M1055 383 V439" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M864 562 H831" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<path d="M448 562 H416" fill="none" stroke="#687b94" stroke-width="2" marker-end="url(#arrow)"/>
+<rect x="40" y="710" width="1200" height="43" rx="10" fill="#e8eef9"/>
+<text x="57" y="738" font-size="17" font-weight="400" fill="#3b5375" font-family="PingFang SC, Noto Sans CJK SC, Microsoft YaHei, sans-serif">learn=false 保留 Context、轨迹和 usage 记录，关闭本次知识沉淀。</text>
+</svg>

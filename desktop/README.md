@@ -1,5 +1,9 @@
 # FoxCode Research Workspace
 
+详细学习指南：[界面截图、启动配置、React 状态、SSE 分帧与 Electron](../docs/learning/DESKTOP.md) · [全栈学习索引](../docs/learning/README.md)
+
+![前端事件与状态](../docs/learning/assets/desktop-state.svg)
+
 React 单页，原生 fetch 读取 POST SSE。`App.tsx` 保存页面状态，`api.ts` 处理 HTTP/SSE 分帧，`types.ts` 定义页面数据，没有 store/service/IPC 层。
 
 先在仓库根目录执行 `uv sync`，再在本目录：

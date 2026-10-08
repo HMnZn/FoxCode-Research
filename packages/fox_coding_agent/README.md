@@ -1,5 +1,9 @@
 # fox_coding_agent
 
+详细学习指南：[配置、组装、Hook、轨迹与学习生命周期](../../docs/learning/CODING_AGENT.md) · [全栈学习索引](../../docs/learning/README.md)
+
+![研究策略组装](../../docs/learning/assets/coding-agent.svg)
+
 `CodingAgent` 组合极简 `Agent` 与三个研究策略：
 
 - `ContextManager`：分层预算、usage 校准、任务状态、完整工具组的渐进压缩与存档引用。

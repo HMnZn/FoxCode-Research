@@ -1,5 +1,13 @@
 # Context：任务状态驱动的信息预算管理
 
+[返回学习索引](README.md) · 前置：[CodingAgent](CODING_AGENT.md) · 关联：[Memory](MEMORY.md)、[Serve](SERVE.md)
+
+学习目标：能计算可用预算、识别完整工具协议组，解释 raw/compact/drop 的选择，并通过面板和轨迹定位一次压缩决定。
+
+![Context 预算与渐进压缩](assets/context-budget.svg)
+
+图中 ①—⑥ 对应一次 `prepare()`。每次模型调用都会准备输入，但只有超过触发阈值时才执行压缩；图示不表示每轮都会丢消息。
+
 ## 1. 从一个实际问题出发
 
 Agent 读取一个几千行的文件，再跑一段很长的测试日志。几轮之后，原始消息已经超出预算。只保留最近 N 条消息可能把用户约束删掉；只做摘要可能丢掉异常位置；按消息分别删除还可能留下一个没有对应调用的工具结果。
@@ -188,3 +196,88 @@ uv run python -m pytest tests/test_research_policies.py -q -k 'compression or pr
 ## 12. 后续研究设计，当前未实施
 
 可拆开的消融变量：渐进观测压缩、utility、状态摘要、检索额度、校准和迟滞。可扩展为结构化计划更新、基于任务阶段的预算份额、真实 tokenizer、学习到的 utility。先固定基线和任务集合，再讨论复杂化。
+
+## 13. 手算一次预算变化
+
+下面数值只是教学推演，不是实验测量。设预算 12000，窗口 32768，输出预留 4096，当前校准系数 a=1：
+
+| 量 | 算式 | 值 |
+| --- | --- | --- |
+| 有效输入预算 B | min(12000, 32768−4096) | 12000 |
+| 原始估算预算 | floor(B/a) | 12000 |
+| 压缩触发阈值 | floor(0.9×12000) | 10800 |
+| 目标 | floor(0.75×12000) | 9000 |
+| 检索额度比例上限 | floor(0.25×12000) | 3000 |
+
+如果当前 before=11000，就会尝试压到 9000。若用户原文、最新组和固定内容只能压到 9600，则重新尝试硬预算 12000；只要最终满足硬预算，仍可以继续。
+
+假设本轮 last_raw_estimate=10000，API 报 input_tokens=14000：
+
+```text
+r = 14000 / 10000 = 1.4
+a_next = max(1, 0.8×1 + 0.2×1.4) = 1.08
+下一轮 raw_budget = floor(12000 / 1.08) = 11111
+```
+
+预算数值没改，但下一轮可接受的基础估算变小。这是对估算偏低的修正，而不是把 provider 的真实模型窗口自动检测出来。
+
+检索最多 3000 也只是比例上限：如果保护内容已经占据大部分空间，实际 room 会更小，甚至为零。显式 trial 放不下时直接报错，普通 Memory/Skill 可以被记录为 dropped。
+
+## 14. 跟着一条失败恢复轨迹走
+
+教学场景：用户要求只修改 parser 的边界逻辑，不能改变公开 API。
+
+```mermaid
+sequenceDiagram
+    participant A as Agent
+    participant T as TaskState
+    participant C as ContextManager
+    participant F as 冷存档
+    A->>T: user 原文与约束
+    A->>T: Read parser.py，revision 0
+    A->>T: Edit 失败，old_text 不唯一
+    A->>T: 再 Read 定位唯一上下文
+    A->>T: Edit 成功，revision 1
+    A->>T: Bash 检查产生长日志
+    A->>F: 保存完整工具返回
+    A->>C: 下一轮 before_model
+    C->>T: 读取文件修订与未解决失败
+    C->>C: 协议组选择和诊断行压缩
+    C-->>A: 用户原文 + 状态 + 选定消息
+```
+
+应当看到的机制是：用户约束仍在；旧 Read 与修订关联；日志存在 evidence 路径；tool_calls 与 tool results 仍配对。不要先期待某个固定压缩倍数，实际选择取决于预算、内容和评分。
+
+| 问题 | 先看字段 | 去哪里继续找 |
+| --- | --- | --- |
+| 某段日志怎么不见了 | decisions 的 raw/compact/drop | observations 与原始 trajectory |
+| 明明召回了却没进入模型 | retrieval_selected/dropped | context_calls 的每轮记录 |
+| 旧文件信息仍被引用 | file_state/read_versions | 当前文件再次 Read |
+| 失败有没有被处理 | failure_cases | retry_succeeded 的后续 call ID |
+| 面板数字不等于真实 usage | calibration、actual_input_tokens | provider usage 与估算输入 |
+
+## 15. 不依赖模型的校准练习
+
+在仓库根目录执行：
+
+```bash
+uv run python - <<'PY'
+from fox_ai.src import Context, UserMessage, Usage
+from fox_coding_agent.src.context import ContextManager
+
+manager = ContextManager(12000, context_window=32768, max_tokens=4096)
+manager.set_sources("Inspect current files before editing.", [])
+context = Context(messages=[UserMessage("只修改 parser 的边界逻辑")])
+manager.prepare(context)
+before = manager.calibration
+manager.observe_usage(Usage(input_tokens=manager.last_estimate * 2))
+manager.prepare(context)
+assert manager.calibration > before
+assert context.messages[0].content == "只修改 parser 的边界逻辑"
+print(manager.snapshot()["calibration"], manager.snapshot()["layers"])
+PY
+```
+
+这只验证 usage 校准与用户输入保护，不模拟完整长日志收益。压缩边界、孤立结果和重复 call ID 用现有机制测试检查更合适。
+
+最后自查：能否说明触发阈值和硬预算不同？能否解释检索额度不足时 trial 与普通块的差异？能否从一条 compact 决策回到完整观测？能否说清文件修订并不覆盖任意外部写入？

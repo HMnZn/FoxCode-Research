@@ -1,5 +1,9 @@
 # fox_serve
 
+详细学习指南：[启动、完整 API、SSE、Queue、停止与排错](../docs/learning/SERVE.md) · [全栈学习索引](../docs/learning/README.md)
+
+![HTTP 与 SSE 链路](../docs/learning/assets/serve-transport.svg)
+
 本地单 Agent HTTP/SSE，`uv run python -m fox_serve` 默认监听 `127.0.0.1:8877`。未配置模型时可从界面完成配置。
 
 | Endpoint | 用途 |

@@ -1,5 +1,13 @@
 # Memory：有来源、版本和有效期的项目记忆
 
+[返回学习索引](README.md) · 前置：[CodingAgent](CODING_AGENT.md) · 关联：[Context](CONTEXT.md)、[Serve](SERVE.md)
+
+学习目标：能追踪一条事实从 provisional 到 active、替代或失效，能解释 BM25、rerank、多样性和实际注入之间的区别。
+
+![Memory 写入、有效性与检索](assets/memory-retrieval.svg)
+
+①—③ 是知识治理，④—⑥ 是下一任务的召回。文件变化触发降权提醒，TTL 到期触发过滤，两者处理方式不同。
+
 ## 1. 为什么不是把历史对话塞进向量库
 
 历史对话包含临时错误、被替换的命令、过时的文件位置和模型猜测。即使语义检索很强，也可能把一个“很像问题但已经错了”的事实召回。
@@ -190,7 +198,7 @@ with TemporaryDirectory() as directory:
 2. 看 `add()`：完全重复去重和带 key 的修订。
 3. 看 `observe_fact()`：支持证据如何去重，什么时候 active。
 4. 看 `retrieve()`：过滤、BM25、rerank、多样性。
-5. 看 `format_memories()`：source/version/stale 如何进入模型输入。
+5. 看 `format_memories()`：ID/version/stale 如何进入模型输入；来源证据留在数据库和轨迹中核验。
 6. 看 `CodingAgent._save_experience()`：真实工具轨迹怎么产生记忆。
 
 ```bash
@@ -216,3 +224,85 @@ uv run python -m pytest tests/test_research_policies.py -q -k memory
 建议外部定义：事实正确率、stale 事实引用率、跨项目泄漏率、召回覆盖、重复召回比例、使用前核验比例，以及终端任务判分。比较无 Memory、BM25-only、增加有效性治理、增加 rerank、增加多样性。
 
 潜在扩展包括 RRF 融合词面与语义候选、事件级事实修订、带依赖图的失效传播。收益数据应来自冻结任务集，避免把训练/沉淀来源直接当测试集。
+
+## 12. 用状态图理解一条项目事实
+
+```mermaid
+stateDiagram-v2
+    [*] --> Provisional: 第一份自动观察
+    Provisional --> Provisional: 同 source 重复
+    Provisional --> Active: 不同来源支持达到门槛
+    [*] --> Active: 用户明确写入
+    Active --> Superseded: 同 scope/key 写入新内容
+    Provisional --> Superseded: 同 scope/key 写入新内容
+    Active --> Invalidated: 显式失效并保留理由
+    Provisional --> Invalidated: 显式失效并保留理由
+```
+
+TTL 到期没有画成一个数据库 status，因为源码没有把条目改成 expired；它保持原记录状态，但检索 SQL 排除它。`stale_paths` 也是查询时计算的证据环境变化，不是新的生命周期状态。
+
+### 事实修订的连续案例
+
+| 时刻 | 操作 | 存储变化 | 默认检索 |
+| --- | --- | --- | --- |
+| t1 | 自动观察 `uv run pytest` 成功 | v1 provisional，support=1 | 不返回 |
+| t1 重复 | 同 source 再观察成功 | 支持数不增加 | 不返回 |
+| t2 | 不同 source 观察成功 | v1 active | 相关查询可返回 |
+| t3 | 用户以同 key 写入新检查命令 | v2 active，v1 superseded | 返回 v2，旧版留档 |
+| t4 | invalidate(v2, reason) | v2 invalidated | 不返回 v1/v2 |
+
+自动命令事实的 key 包含命令 hash，命令改变通常会形成不同 key。上表的“同 key 替代”是显式知识管理示例，不表示系统自动识别所有检查命令互相替代。
+
+## 13. 手算一次排序与去重
+
+以下是构造的教学分量，不是运行结果。假设一条 active 记忆词面匹配归一为 1，刚更新、同项目、confidence=.8、success=True、query coverage=1、independent_support=2，且无 stale 文件：
+
+```text
+score = 1 + 0.2 + 0.2 + 0.16 + 0.1 + 0.3 + 0.1 = 2.06
+```
+
+如果关联文件变化，则 score=1.46。它仍可能召回，因为变化表示需要重新核验，而不是自动断言内容错误。
+
+再假设 A 的 score=2.0，B=1.9，C=1.6。选 A 后，B 与 A 的 token 集 Jaccard=.9，C 与 A 为 .1：
+
+```text
+B.selection_score = 1.9 − 0.65×0.9 = 1.315
+C.selection_score = 1.6 − 0.65×0.1 = 1.535
+```
+
+第二条会选 C。多样性选择可能把基础分更低但补充信息更多的内容提前，避免 top-k 被近重复经历占满。
+
+`score` 是 rerank 总和；`selection_score` 再扣冗余；Context 检索块使用后者。面板主要显示 score 与拆解，不要以为两套数值必须相同。
+
+## 14. 将面板、API 和数据表对应起来
+
+| 观察入口 | 回答什么 | 不能单独推出什么 |
+| --- | --- | --- |
+| memory.counts | active/provisional 各类型存了多少 | 有效期内实际可用条数 |
+| memory.statuses | 各生命周期状态的记录数 | 内容是否正确 |
+| memory.retrieved | 当前任务开始召回了谁 | 每轮都进入模型输入 |
+| hit.breakdown | 分数由哪些信号组成 | 权重已经最优 |
+| hit.stale_paths | 哪些依赖指纹改变 / 消失 | 该知识一定为假 |
+| trajectory.context_calls | 每次模型输入选择情况 | 模型确实遵循了记忆 |
+
+可以只读查询自己的项目库。下面命令需要系统有 sqlite3，路径从项目根目录计算：
+
+```bash
+sqlite3 .foxcode/research/memory.sqlite \
+  'SELECT id,memory_type,status,version,key,expires_at FROM memories ORDER BY id DESC LIMIT 10;'
+```
+
+这是观察已经初始化的库，不是手工迁移或修改 schema。没有数据库时先完成一次配置/离线 CodingAgent 练习，再查询。
+
+## 15. 分层排错案例
+
+“我已经存了 pytest 知识，为什么本次没用？”按顺序查：
+
+1. 数据库是否属于当前 cwd；scope 是否与当前规范化项目路径一致。
+2. 状态是否 active，有没有 superseded/invalidated 或 TTL 到期。
+3. query 是否有可词面匹配的 token；FTS 是 OR 候选，不理解任意同义表达。
+4. breakdown 是否被 stale 或时间因素拉低；相近内容是否受到多样性惩罚。
+5. 是否在 Memory top-k 中；是否又被 Context 检索额度淘汰。
+6. 若确实注入，回查工具轨迹和模型回答，区分“有机会看到”与“真的采用”。
+
+扩展练习：用第 8 节临时库给相同 source 再调用一次 observe_fact，断言支持数不增加；再给不同 key 写入矛盾内容，观察系统不会做通用语义冲突判断。这能帮你明确实现的治理边界。
